@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ElectricalInspectionDashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "810c32ec-305b-420b-bc47-d575cc699c2f"
+  }
+}

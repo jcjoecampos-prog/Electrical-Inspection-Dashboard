@@ -1,0 +1,106 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "8613987fe3aa05220eab",
+  "position": {
+    "x": 0,
+    "y": 517.14285714285722,
+    "z": 4007,
+    "height": 202.85714285714286,
+    "width": 265.71428571428572,
+    "tabOrder": 4007
+  },
+  "visual": {
+    "visualType": "pythonVisual",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sheet1"
+                    }
+                  },
+                  "Property": "Equipment"
+                }
+              },
+              "queryRef": "Sheet1.Equipment",
+              "nativeQueryRef": "Equipment"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Sheet1"
+                    }
+                  },
+                  "Property": "Repair Days"
+                }
+              },
+              "queryRef": "Sheet1.Repair Days",
+              "nativeQueryRef": "Repair Days"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "script": [
+        {
+          "properties": {
+            "source": {
+              "expr": {
+                "Literal": {
+                  "Value": "'# The following code to create a dataframe and remove duplicated rows is always executed and acts as a preamble for your script: \n\n# dataset = pandas.DataFrame(Equipment, Repair Days)\n# dataset = dataset.drop_duplicates()\n\n# Paste or type your script code here:\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\ndata = dataset.copy()\n\ndata[\"Repair Days\"] = pd.to_numeric(\n    data[\"Repair Days\"],\n    errors = \"coerce\"\n)\n\ndata = data.dropna(subset = [\"Equipment\", \"Repair Days\"])\n\nsummary = (\n    data.groupby(\"Equipment\", as_index = False)[\"Repair Days\"]\n    .mean()\n    .sort_values(\"Repair Days\", ascending = False)\n)\n\nplt.figure(figsize = (8, 5))\nplt.bar(summary[\"Equipment\"], summary[\"Repair Days\"])\n\nplt.title(\"Average Repair Days by Equipment\")\nplt.xlabel(\"Equipment\")\nplt.ylabel(\"Average Repair Days\")\nplt.xticks(rotation = 30, ha = \"right\")\nplt.tight_layout()\n\nplt.show()'"
+                }
+              }
+            },
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Python'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "773f9b0671a149e04139",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Sheet1"
+              }
+            },
+            "Property": "Equipment"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8f128a7a511d0aa3054a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Sheet1"
+              }
+            },
+            "Property": "Repair Days"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

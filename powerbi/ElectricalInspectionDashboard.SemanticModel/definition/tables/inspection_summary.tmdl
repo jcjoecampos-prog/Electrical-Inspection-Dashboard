@@ -1,0 +1,60 @@
+table inspection_summary
+	lineageTag: 6249005b-2548-4390-8897-e229019da89f
+
+	column Equipment
+		dataType: string
+		lineageTag: ee8d6291-8b8e-454e-aade-25ea2803b7f2
+		summarizeBy: none
+		sourceColumn: Equipment
+
+		annotation SummarizationSetBy = Automatic
+
+	column Total_Inspections
+		dataType: int64
+		formatString: 0
+		lineageTag: 394080f6-a232-4e82-b662-dda3ff486c7a
+		summarizeBy: none
+		sourceColumn: Total_Inspections
+
+		annotation SummarizationSetBy = Automatic
+
+	column Total_Failures
+		dataType: int64
+		formatString: 0
+		lineageTag: f77ada92-350f-424d-a567-e01a74f38550
+		summarizeBy: none
+		sourceColumn: Total_Failures
+
+		annotation SummarizationSetBy = Automatic
+
+	column Average_Repair_Days
+		dataType: double
+		lineageTag: b249e06e-af1f-45de-83d4-20743ebe92e3
+		summarizeBy: none
+		sourceColumn: Average_Repair_Days
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Failure_Rate
+		dataType: int64
+		formatString: 0
+		lineageTag: c843f882-459e-4c8b-9ae6-dcd09e5f12cd
+		summarizeBy: none
+		sourceColumn: Failure_Rate
+
+		annotation SummarizationSetBy = Automatic
+
+	partition inspection_summary = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("C:\Users\jcampos\Documents\Electrical-Inspection-Dashboard\data\inspection_summary.csv"), [Delimiter = ",", Columns = 5, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"Equipment", type text}, {"Total_Inspections", Int64.Type}, {"Total_Failures", Int64.Type}, {"Average_Repair_Days", type number}, {"Failure_Rate", Int64.Type}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_ResultType = Table
+

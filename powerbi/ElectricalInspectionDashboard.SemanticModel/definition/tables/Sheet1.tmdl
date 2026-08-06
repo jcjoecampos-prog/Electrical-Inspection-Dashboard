@@ -1,0 +1,109 @@
+table Sheet1
+	lineageTag: 19579929-58e6-4f7e-91da-287461daecda
+
+	measure 'Total Failures' = CALCULATE(COUNT(Sheet1[InspectionID]), Sheet1[Status] = "Fail")
+		formatString: 0
+		lineageTag: f5550460-e29d-46d6-ab59-c23f9bb56b0d
+
+	measure Measure
+		lineageTag: f73b5330-2437-4c11-aa37-956633005915
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Pass Rate' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        COUNT(Sheet1[InspectionID]),
+			        Sheet1[Status] = "Pass"
+			    ),
+			    COUNT(Sheet1[InspectionID]),
+			    0
+			)
+		formatString: 0%;-0%;0%
+		lineageTag: 17f0f8f1-3596-46dc-bd67-5cc6040bb41d
+
+	measure 'Average Repair Days' = AVERAGE(Sheet1[Repair Days])
+		lineageTag: 105483c7-b8e8-4fa2-8b2f-42f4c7336017
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column InspectionID
+		dataType: int64
+		formatString: 0
+		lineageTag: a3f2c347-8426-4f88-844d-5319330c22a9
+		summarizeBy: count
+		sourceColumn: InspectionID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 39d48138-e7aa-464c-afce-2514ab6d8b8e
+		summarizeBy: none
+		sourceColumn: Date
+
+		variation Variation
+			isDefault
+			relationship: ef1622f8-2681-4e37-bab4-2b031654e797
+			defaultHierarchy: LocalDateTable_9a38b755-db85-414a-bd35-e519b849e545.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Equipment
+		dataType: string
+		lineageTag: 1dc31ec8-0b00-478f-a712-6358916fb7c7
+		summarizeBy: none
+		sourceColumn: Equipment
+
+		annotation SummarizationSetBy = Automatic
+
+	column Location
+		dataType: string
+		lineageTag: be632db8-0d85-482b-9231-4d493d733759
+		summarizeBy: none
+		sourceColumn: Location
+
+		annotation SummarizationSetBy = Automatic
+
+	column Inspector
+		dataType: string
+		lineageTag: cc1ebee9-03d6-4cfa-9dcf-5eb0f947f47d
+		summarizeBy: none
+		sourceColumn: Inspector
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: bce87157-48dc-4d76-bdda-c4246ecf476f
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Repair Days'
+		dataType: int64
+		formatString: 0
+		lineageTag: e9e116bf-f133-42b5-904a-f4bc7fc5267a
+		summarizeBy: sum
+		sourceColumn: Repair Days
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Sheet1 = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(File.Contents("C:\Users\jcampos\OneDrive - Daidone Electric, Inc\Documents\PowerBI example.xlsx"), null, true),
+				  #"Navigation 1" = Source{[Item = "Sheet1", Kind = "Sheet"]}[Data],
+				  #"Promoted headers" = Table.PromoteHeaders(#"Navigation 1", [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"InspectionID", Int64.Type}, {"Date", type date}, {"Equipment", type text}, {"Location", type text}, {"Inspector", type text}, {"Status", type text}, {"Repair Days", Int64.Type}})
+				in
+				  #"Changed column type"
+
+	annotation PBI_ResultType = Table
+

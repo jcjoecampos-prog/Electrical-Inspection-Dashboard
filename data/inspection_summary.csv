@@ -1,0 +1,5 @@
+Equipment,Total_Inspections,Total_Failures,Average_Repair_Days,Failure_Rate
+Breaker,1,1,6.0,1.0
+UPS,2,2,2.5,1.0
+Camera,1,0,0.0,0.0
+RTU,2,0,0.0,0.0

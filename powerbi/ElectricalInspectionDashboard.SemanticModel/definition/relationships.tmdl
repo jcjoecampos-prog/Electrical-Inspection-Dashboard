@@ -1,0 +1,9 @@
+relationship ef1622f8-2681-4e37-bab4-2b031654e797
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Sheet1.Date
+	toColumn: LocalDateTable_9a38b755-db85-414a-bd35-e519b849e545.Date
+
+relationship AutoDetected_06add2a7-0eaf-4dde-a9b8-8fdf497ceb19
+	fromColumn: Sheet1.Equipment
+	toColumn: inspection_summary.Equipment
+
