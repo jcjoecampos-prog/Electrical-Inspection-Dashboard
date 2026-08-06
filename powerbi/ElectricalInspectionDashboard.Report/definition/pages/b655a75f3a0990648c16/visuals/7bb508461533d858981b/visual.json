@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "7bb508461533d858981b",
   "position": {
-    "x": 987.5,
-    "y": 0,
+    "x": 976.37155633223688,
+    "y": 121.25,
     "z": 4001,
-    "height": 163.75,
-    "width": 292.5,
+    "height": 164,
+    "width": 224,
     "tabOrder": 4001
   },
   "visual": {
@@ -50,6 +50,29 @@
         ],
         "isDefaultSort": true
       }
+    },
+    "objects": {
+      "fillCustom": [
+        {
+          "properties": {
+            "fillColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.4
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   },

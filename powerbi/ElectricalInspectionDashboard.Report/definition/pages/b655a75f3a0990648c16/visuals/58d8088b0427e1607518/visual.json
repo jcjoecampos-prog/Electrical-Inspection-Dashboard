@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "58d8088b0427e1607518",
   "position": {
-    "x": 378.75,
-    "y": 0,
+    "x": 367.62155633223688,
+    "y": 121.25,
     "z": 2000,
-    "height": 163.75,
-    "width": 303.75,
+    "height": 164,
+    "width": 224,
     "tabOrder": 2000
   },
   "visual": {
@@ -50,6 +50,28 @@
         ],
         "isDefaultSort": true
       }
+    },
+    "objects": {
+      "fillCustom": [
+        {
+          "properties": {
+            "fillColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FF3D39'"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sheet1.Total Failures"
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   },
