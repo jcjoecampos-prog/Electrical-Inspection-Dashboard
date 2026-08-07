@@ -2,6 +2,7 @@ from src.extract import extract_csv
 from src.validation import validate_schema
 from src.profile import profile_data
 from src.transform import transform_data
+from src.load import load_csv_outputs
 
 def run_pipeline() -> None:
     """Run the electrical inpection data pipeline."""
@@ -17,6 +18,20 @@ def run_pipeline() -> None:
     profile_data(inspections)
 
     valid_records, rejected_records = transform_data(inspections)
+
+    if len(inspections) != (
+        len(valid_records) + len(rejected_records)
+    ):
+        raise RuntimeError(
+            "Record reconcilliation failed."
+        )
+
+    print(
+        "Record reconciliation passed: "
+        f"{len(inspections)} source = "
+        f"{len(valid_records)} valid + "
+        f"{len(rejected_records)} rejected."
+    )
 
     print("--- TRANSOFRMATION SUMMARY ---")
     print(f"Source records: {len(inspections)}")
@@ -44,6 +59,11 @@ def run_pipeline() -> None:
         )
 
     print("--- END TRANSFORMATION SUMMARY ---")
+
+    load_csv_outputs(
+        valid_records,
+        rejected_records,
+    )
 
     print("Pipeline completed successfully.")
 
