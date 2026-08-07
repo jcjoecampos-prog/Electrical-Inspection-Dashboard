@@ -1,6 +1,7 @@
 from src.extract import extract_csv
 from src.validation import validate_schema
 from src.profile import profile_data
+from src.transform import transform_data
 
 def run_pipeline() -> None:
     """Run the electrical inpection data pipeline."""
@@ -14,6 +15,35 @@ def run_pipeline() -> None:
     validate_schema(inspections)
 
     profile_data(inspections)
+
+    valid_records, rejected_records = transform_data(inspections)
+
+    print("--- TRANSOFRMATION SUMMARY ---")
+    print(f"Source records: {len(inspections)}")
+    print(f"Valid records: {len(valid_records)}")
+    print(f"Rejected records: {len(rejected_records)}")
+
+    print(
+        "Warning: Source dates do not contain a year. "
+        "Only the documented month and day were extracted."
+    )
+
+    print("\nTransformed valid records:")
+    print(valid_records.to_string(index=False))
+
+    if not rejected_records.empty:
+        print("\nRejected records:")
+        print(
+            rejected_records[
+                [
+                    "inspection_id",
+                    "inspection_date_raw",
+                    "rejection_reason", 
+                ]
+            ].to_string(index=False)
+        )
+
+    print("--- END TRANSFORMATION SUMMARY ---")
 
     print("Pipeline completed successfully.")
 
