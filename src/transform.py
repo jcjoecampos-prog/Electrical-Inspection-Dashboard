@@ -101,7 +101,7 @@ def transform_data(dataframe: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]
             reasons.append("Missing inspector")
 
         if row["status"] not in ALLOWED_STATUSES:
-            reasons.append("Repair days connot be negative")
+            reasons.append("Invalid status")
 
         if pd.isna(row["repair_days"]):
             reasons.append("Missing or invalid repair days")
