@@ -1,17 +1,15 @@
-# Python virtual environment
 .venv/
-
-# Python cache
 __pycache__/
 *.py[cod]
-
-# VS Code local settings
+.env
 .vscode/
 
-# Power BI local cache
+data/processed/*
+data/rejected/*
+
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
 
-# Temporary files
 *.tmp
 ~$*
+*.log

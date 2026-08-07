@@ -1,0 +1,7 @@
+﻿InspectionID,Date,Equipment,Location,Inspector,Status,Repair Days
+1001,1-Jul,RTU,House A,Joe,Pass,0
+1002,1-Jul,UPS,House A,Mike,Fail,3
+1003,2-Jul,Camera,Pier 3,Joe,Pass,0
+1004,2-Jul,Breaker,House B,Sarah,Fail,6
+1005,3-Jul,RTU,House A,Sarah,Pass,0
+1006,3-Jul,UPS,Pier 2,Mike,Fail,2
