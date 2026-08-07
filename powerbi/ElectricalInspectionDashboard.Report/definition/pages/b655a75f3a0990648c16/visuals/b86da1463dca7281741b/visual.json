@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "b86da1463dca7281741b",
   "position": {
-    "x": 0.12155633223684958,
-    "y": 277.5,
+    "x": 0,
+    "y": 164.28571428571431,
     "z": 4002,
-    "height": 186.93467336683415,
-    "width": 640.40201005025119,
+    "height": 130,
+    "width": 640,
     "tabOrder": 4002
   },
   "visual": {
@@ -79,21 +79,6 @@
         ],
         "isDefaultSort": true
       }
-    },
-    "visualContainerObjects": {
-      "title": [
-        {
-          "properties": {
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Inspection Count by Equipment'"
-                }
-              }
-            }
-          }
-        }
-      ]
     },
     "drillFilterOtherVisuals": true
   },

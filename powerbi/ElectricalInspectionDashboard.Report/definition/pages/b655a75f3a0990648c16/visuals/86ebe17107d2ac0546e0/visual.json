@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "86ebe17107d2ac0546e0",
   "position": {
-    "x": 671.37155633223688,
-    "y": 121.25,
+    "x": 682.5,
+    "y": 0,
     "z": 3000,
     "height": 164,
     "width": 224,
@@ -50,28 +50,6 @@
         ],
         "isDefaultSort": true
       }
-    },
-    "objects": {
-      "fillCustom": [
-        {
-          "properties": {
-            "fillColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#12F01A'"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "Sheet1.Pass Rate"
-          }
-        }
-      ]
     },
     "drillFilterOtherVisuals": true
   },

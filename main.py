@@ -5,7 +5,7 @@ from src.transform import transform_data
 from src.load import load_csv_outputs
 
 def run_pipeline() -> None:
-    """Run the electrical inpection data pipeline."""
+    """Run the electrical inspection data pipeline."""
 
     print("Starting inspection data pipeline...")
 
@@ -23,7 +23,7 @@ def run_pipeline() -> None:
         len(valid_records) + len(rejected_records)
     ):
         raise RuntimeError(
-            "Record reconcilliation failed."
+            "Record reconciliation failed."
         )
 
     print(
@@ -33,7 +33,7 @@ def run_pipeline() -> None:
         f"{len(rejected_records)} rejected."
     )
 
-    print("--- TRANSOFRMATION SUMMARY ---")
+    print("--- TRANSFORMATION SUMMARY ---")
     print(f"Source records: {len(inspections)}")
     print(f"Valid records: {len(valid_records)}")
     print(f"Rejected records: {len(rejected_records)}")

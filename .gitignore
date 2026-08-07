@@ -1,10 +1,15 @@
 .venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .env
 .vscode/
 
 data/processed/*
 data/rejected/*
 
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+*.tmp
+~$*
 *.log
