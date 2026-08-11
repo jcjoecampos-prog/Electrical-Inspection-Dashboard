@@ -3,6 +3,7 @@ from src.validation import validate_schema
 from src.profile import profile_data
 from src.transform import transform_data
 from src.load import load_csv_outputs
+from src.load_postgres import load_to_postgres
 
 def run_pipeline() -> None:
     """Run the electrical inspection data pipeline."""
@@ -64,6 +65,8 @@ def run_pipeline() -> None:
         valid_records,
         rejected_records,
     )
+
+    load_to_postgres(valid_records)
 
     print("Pipeline completed successfully.")
 
