@@ -1,4 +1,7 @@
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 COLUMN_MAP = {
     "InspectionID": "inspection_id",
@@ -71,6 +74,12 @@ def transform_data(dataframe: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]
         parsed_dates.dt.month.astype("Int64")
     )
 
+    logger.warning(
+        "Source dates do not contain a year. "
+        "Only the documented month and day were extracted."
+    )
+    
+
     duplicate_ids = (
         transformed["inspection_id"]
         .duplicated(keep=False)
@@ -123,6 +132,12 @@ def transform_data(dataframe: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]
 
     valid_records = valid_records.drop(
         columns = ["rejection_reason"]
+    )
+
+    logger.info(
+        "Transformation completed: %d valid, %d rejected.",
+        len(valid_records),
+        len(rejected_records),
     )
 
     return valid_records, rejected_records

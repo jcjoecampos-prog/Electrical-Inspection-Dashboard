@@ -1,11 +1,11 @@
 import os
-
+import logging 
 import pandas as pd
 import psycopg
 from dotenv import load_dotenv
 
 load_dotenv()
-
+logger = logging.getLogger(__name__)
 INSERT_SQL = """
 INSERT INTO inspection_records (
     inspection_id,
@@ -60,9 +60,9 @@ def load_to_postgres(dataframe: pd.DataFrame) -> None:
 
         connection.commit()
 
-        print(
-            f"PostgreSQL load completed: "
-            f"{len(dataframe)} records."
+        logger.info(
+            "PostgreSQL load completed: %d records.",
+            len(dataframe),
         )
 
     except Exception:

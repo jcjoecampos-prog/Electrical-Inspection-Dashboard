@@ -1,6 +1,8 @@
 from pathlib import Path
 import pandas as pd
+import logging
 
+logger = logging.getLogger(__name__)
 RAW_FILE = Path("data/raw/inspections_data.csv")
 
 def extract_csv(file_path: Path = RAW_FILE) -> pd.DataFrame:
@@ -17,6 +19,12 @@ def extract_csv(file_path: Path = RAW_FILE) -> pd.DataFrame:
         raise ValueError(
             f"Raw inspection file contains no records: {file_path}"
         )
+
+    logger.info(
+        "Extracted %d records from %s.",
+        len(dataframe),
+        file_path,
+    )
 
     return dataframe
 if __name__ == "__main__":

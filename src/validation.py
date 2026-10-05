@@ -1,4 +1,9 @@
+from venv import logger
+
 import pandas as pd
+import logging
+
+logger = logging.getLogger(__name__)
 
 REQUIRED_COLUMNS = {
     "InspectionID",
@@ -30,4 +35,6 @@ def validate_schema(dataframe: pd.DataFrame) -> None:
             "Warning: Unexpected columns detected: "
             f"{unexpected_list}"
         )
-    print("Schema validation completed successfully.")
+    logger.info(
+        "Schema validation completed successfully."
+    )
