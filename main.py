@@ -1,74 +1,54 @@
+import logging
 from src.extract import extract_csv
 from src.validation import validate_schema
 from src.profile import profile_data
 from src.transform import transform_data
 from src.load import load_csv_outputs
 from src.load_postgres import load_to_postgres
+from src.logging_config import configure_logging
+
+logger = logging.getLogger(__name__)
 
 def run_pipeline() -> None:
     """Run the electrical inspection data pipeline."""
 
-    print("Starting inspection data pipeline...")
+    logger.info("Starting inspection data pipeline...")
+    try:
+        inspections = extract_csv()
 
-    inspections = extract_csv()
+        validate_schema(inspections)
 
-    print(f"Extracted {len(inspections)} records.")
+        profile_data(inspections)
 
-    validate_schema(inspections)
+        valid_records, rejected_records = transform_data(inspections)
 
-    profile_data(inspections)
+        if len(inspections) != (
+            len(valid_records) + len(rejected_records)
+        ):
+            raise RuntimeError(
+                "Record reconciliation failed."
+            )
 
-    valid_records, rejected_records = transform_data(inspections)
-
-    if len(inspections) != (
-        len(valid_records) + len(rejected_records)
-    ):
-        raise RuntimeError(
-            "Record reconciliation failed."
+        logger.info(
+            "Record reconciliation passed: "
+            f"{len(inspections)} source = "
+            f"{len(valid_records)} valid + "
+            f"{len(rejected_records)} rejected."
+        )
+        
+        #Reconcillation
+        load_csv_outputs(
+            valid_records,
+            rejected_records,
         )
 
-    print(
-        "Record reconciliation passed: "
-        f"{len(inspections)} source = "
-        f"{len(valid_records)} valid + "
-        f"{len(rejected_records)} rejected."
-    )
+        load_to_postgres(valid_records)
 
-    print("--- TRANSFORMATION SUMMARY ---")
-    print(f"Source records: {len(inspections)}")
-    print(f"Valid records: {len(valid_records)}")
-    print(f"Rejected records: {len(rejected_records)}")
+        logger.info("Pipeline completed successfully.")
 
-    print(
-        "Warning: Source dates do not contain a year. "
-        "Only the documented month and day were extracted."
-    )
-
-    print("\nTransformed valid records:")
-    print(valid_records.to_string(index=False))
-
-    if not rejected_records.empty:
-        print("\nRejected records:")
-        print(
-            rejected_records[
-                [
-                    "inspection_id",
-                    "inspection_date_raw",
-                    "rejection_reason", 
-                ]
-            ].to_string(index=False)
-        )
-
-    print("--- END TRANSFORMATION SUMMARY ---")
-
-    load_csv_outputs(
-        valid_records,
-        rejected_records,
-    )
-
-    load_to_postgres(valid_records)
-
-    print("Pipeline completed successfully.")
-
+    except Exception:
+        logger.exception("Inspection data pipeline failed.")
+        raise
 if __name__ == "__main__":
+    configure_logging()
     run_pipeline()

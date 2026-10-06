@@ -1,6 +1,8 @@
 from pathlib import Path
-
+import logging
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 PROCESSED_FILE = Path(
     "data/processed/inspections_processed.csv"
@@ -35,26 +37,21 @@ def load_csv_outputs(
         REJECTED_FILE,
         index = False
     )
-
-    print("\n--- LOAD SUMMARY ---")
-
-    print(
-        f"Processed records written: "
-        f"{len(valid_records)}"
+    logger.info("--- LOAD SUMMARY ---")
+    
+    logger.info(
+        "CSV load completed: %d processed, %d rejected.",
+        len(valid_records),
+        len(rejected_records),
     )
 
-    print(
-        f"Rejected records written: "
-        f"{len(rejected_records)}"
+    logger.info(
+        "Processed file: %s",
+        PROCESSED_FILE
+    )
+    logger.info(
+        "Rejected file: %s",
+        REJECTED_FILE
     )
 
-    print(
-        f"Processed file: "
-        f"{PROCESSED_FILE}"
-    )
-    print(
-        f"Rejected file: "
-        f"{REJECTED_FILE}"
-    )
-
-    print("--- END LOAD SUMMARY ---")
+    logger.info("--- END LOAD SUMMARY ---")
