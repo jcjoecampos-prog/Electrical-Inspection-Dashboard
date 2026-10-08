@@ -30,6 +30,12 @@ def parse_args():
         help="Skip the PostgreSQL load stage.",
     )
 
+    parser.add_argument(
+        "--input-file",
+        default="data/raw/inspections_data.csv",
+        help="Path to the source inspection CSV file.",
+    )
+
     return parser.parse_args()
 
 def run_pipeline(config: PipelineRunConfig) -> None:
@@ -37,7 +43,7 @@ def run_pipeline(config: PipelineRunConfig) -> None:
 
     logger.info("Starting inspection data pipeline...")
     try:
-        inspections = extract_csv()
+        inspections = extract_csv(config.input_file)
 
         validate_schema(inspections)
 
@@ -81,6 +87,7 @@ if __name__ == "__main__":
     config = PipelineRunConfig(
             skip_profile=args.skip_profile,
             no_postgres=args.no_postgres,
+            input_file=args.input_file,
         )
 
     run_pipeline(config)
