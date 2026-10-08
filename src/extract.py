@@ -5,8 +5,10 @@ import logging
 logger = logging.getLogger(__name__)
 RAW_FILE = Path("data/raw/inspections_data.csv")
 
-def extract_csv(file_path: Path = RAW_FILE) -> pd.DataFrame:
+def extract_csv(file_path: str | Path = RAW_FILE,) -> pd.DataFrame:
     """Read inspection data from a CSV file."""
+
+    file_path = Path(file_path)
 
     if not file_path.exists():
         raise FileNotFoundError(

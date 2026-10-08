@@ -9,7 +9,7 @@ def test_pipeline_logs_and_reraises_failure(
 ):
     """Pipeline failures should be logged and re-raised."""
 
-    def fail_extract():
+    def fail_extract(*args, **kwargs):
         raise RuntimeError("controlled test failure")
 
     monkeypatch.setattr(
