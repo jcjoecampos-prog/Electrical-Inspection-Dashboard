@@ -17,13 +17,13 @@ def test_missing_database_variable_raises_clear_error(monkeypatch):
 def test_invalid_database_port_raises_clear_error(
         monkeypatch,
 ):
-    monkeypatch.setenv(
-        "DB_PORT",
-        "not-a-number",
-    )
-
+    monkeypatch.setenv("DB_HOST", "localhost")
+    monkeypatch.setenv("DB_PORT", "not-a-number")
+    monkeypatch.setenv("DB_NAME", "postgres")
+    monkeypatch.setenv("DB_USER", "test_user")
+    monkeypatch.setenv("DB_PASSWORD", "test_password")
+    
     with pytest.raises(
         ValueError,
     ):
         get_database_settings()
-        
