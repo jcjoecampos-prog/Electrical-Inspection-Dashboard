@@ -1,6 +1,7 @@
 import logging
 import pytest
 import main
+from src.pipeline_config import PipelineRunConfig
 
 def test_pipeline_logs_and_reraises_failure(
         monkeypatch,
@@ -16,14 +17,15 @@ def test_pipeline_logs_and_reraises_failure(
         "extract_csv",
         fail_extract
     )
-
+    
+    config = PipelineRunConfig()
     caplog.set_level(logging.ERROR)
 
     with pytest.raises(
         RuntimeError,
         match = "controlled test failure",
     ):
-        main.run_pipeline()
+        main.run_pipeline(config)
 
     assert (
         "Inspection data pipeline failed."

@@ -7,6 +7,7 @@ from src.transform import transform_data
 from src.load import load_csv_outputs
 from src.load_postgres import load_to_postgres
 from src.logging_config import configure_logging
+from src.pipeline_config import PipelineRunConfig
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ def parse_args():
 
     return parser.parse_args()
 
-def run_pipeline(skip_profile: bool = False, no_postgres: bool = False) -> None:
+def run_pipeline(config: PipelineRunConfig) -> None:
     """Run the electrical inspection data pipeline."""
 
     logger.info("Starting inspection data pipeline...")
@@ -40,7 +41,7 @@ def run_pipeline(skip_profile: bool = False, no_postgres: bool = False) -> None:
 
         validate_schema(inspections)
 
-        if not skip_profile:
+        if not config.skip_profile:
             profile_data(inspections)
 
         valid_records, rejected_records = transform_data(inspections)
@@ -65,7 +66,7 @@ def run_pipeline(skip_profile: bool = False, no_postgres: bool = False) -> None:
             rejected_records,
         )
 
-        if not no_postgres:
+        if not config.no_postgres:
             load_to_postgres(valid_records)
 
         logger.info("Pipeline completed successfully.")
@@ -76,7 +77,10 @@ def run_pipeline(skip_profile: bool = False, no_postgres: bool = False) -> None:
 if __name__ == "__main__":
     configure_logging()
     args = parse_args()
-    run_pipeline(
-        skip_profile=args.skip_profile,
-        no_postgres=args.no_postgres,
-    )
+
+    config = PipelineRunConfig(
+            skip_profile=args.skip_profile,
+            no_postgres=args.no_postgres,
+        )
+
+    run_pipeline(config)
