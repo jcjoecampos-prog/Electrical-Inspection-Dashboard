@@ -1,32 +1,24 @@
-import os
-
 import psycopg
-from dotenv import load_dotenv
+from src.config import get_database_settings
 
-
-load_dotenv()
 
 def get_database_connection():
     """Return a PostgreSQL database connection."""
 
+    settings = get_database_settings()
+
     return psycopg.connect(
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
-        dbname=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
+        host=settings.host,
+        port=settings.port,
+        dbname=settings.name,
+        user=settings.user,
+        password=settings.password,
     )
 
 def test_database_connection() -> None:
     """Connect to PostgreSQL and verify the server responds."""
 
-    connection = psycopg.connect(
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
-        dbname=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-    )
+    connection = get_database_connection()
 
     try:
         with connection.cursor() as cursor:

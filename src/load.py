@@ -37,7 +37,6 @@ def load_csv_outputs(
         REJECTED_FILE,
         index = False
     )
-    logger.info("--- LOAD SUMMARY ---")
     
     logger.info(
         "CSV load completed: %d processed, %d rejected.",
@@ -53,5 +52,3 @@ def load_csv_outputs(
         "Rejected file: %s",
         REJECTED_FILE
     )
-
-    logger.info("--- END LOAD SUMMARY ---")
