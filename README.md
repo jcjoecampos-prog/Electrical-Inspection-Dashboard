@@ -56,5 +56,14 @@ screenshots/   Dashboard images
 DashBoard Preview:
 ![Dashboard Preview](screenshots/dashboard.png)
 
+## Environment Setup
+
+Create a local environment file from the provided template.
+
+### Windows PowerShell
+
+```powershell
+Copy-Item .env.example .env
+
 Author:
 Joe Campos
