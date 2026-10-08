@@ -1,3 +1,4 @@
+import argparse
 import logging
 from src.extract import extract_csv
 from src.validation import validate_schema
@@ -9,7 +10,28 @@ from src.logging_config import configure_logging
 
 logger = logging.getLogger(__name__)
 
-def run_pipeline() -> None:
+def parse_args():
+    """Parse command-line arguments."""
+
+    parser = argparse.ArgumentParser(
+        description="Run the electrical inspection data pipeline."
+    )
+
+    parser.add_argument(
+        "--skip-profile",
+        action="store_true",
+        help="Skip the data profiling stage.",
+    )
+
+    parser.add_argument(
+        "--no-postgres",
+        action="store_true",
+        help="Skip the PostgreSQL load stage.",
+    )
+
+    return parser.parse_args()
+
+def run_pipeline(skip_profile: bool = False, no_postgres: bool = False) -> None:
     """Run the electrical inspection data pipeline."""
 
     logger.info("Starting inspection data pipeline...")
@@ -18,7 +40,8 @@ def run_pipeline() -> None:
 
         validate_schema(inspections)
 
-        profile_data(inspections)
+        if not skip_profile:
+            profile_data(inspections)
 
         valid_records, rejected_records = transform_data(inspections)
 
@@ -42,7 +65,8 @@ def run_pipeline() -> None:
             rejected_records,
         )
 
-        load_to_postgres(valid_records)
+        if not no_postgres:
+            load_to_postgres(valid_records)
 
         logger.info("Pipeline completed successfully.")
 
@@ -51,4 +75,8 @@ def run_pipeline() -> None:
         raise
 if __name__ == "__main__":
     configure_logging()
-    run_pipeline()
+    args = parse_args()
+    run_pipeline(
+        skip_profile=args.skip_profile,
+        no_postgres=args.no_postgres,
+    )
