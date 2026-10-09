@@ -36,6 +36,12 @@ def parse_args():
         help="Path to the source inspection CSV file.",
     )
 
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Run validation and transformation without writing outputs or loading PostgreSQL.",
+    )   
+
     return parser.parse_args()
 
 def run_pipeline(config: PipelineRunConfig) -> None:
@@ -67,16 +73,18 @@ def run_pipeline(config: PipelineRunConfig) -> None:
         )
         
         #Reconcillation
-        load_csv_outputs(
-            valid_records,
-            rejected_records,
+        if config.dry_run:
+            logger.info(
+                "Dry-run mode enabled: skipping file output and PostgreSQL load."
         )
+        
+        else:
+            load_csv_outputs(valid_records, rejected_records)
 
-        if not config.no_postgres:
-            load_to_postgres(valid_records)
+            if not config.no_postgres:
+                load_to_postgres(valid_records)
 
         logger.info("Pipeline completed successfully.")
-
 
     except (FileNotFoundError, ValueError):
         raise
@@ -94,6 +102,7 @@ if __name__ == "__main__":
                 skip_profile=args.skip_profile,
                 no_postgres=args.no_postgres,
                 input_file=args.input_file,
+                dry_run=args.dry_run,
             )
 
         run_pipeline(config)
