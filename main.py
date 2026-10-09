@@ -8,6 +8,7 @@ from src.load import load_csv_outputs
 from src.load_postgres import load_to_postgres
 from src.logging_config import configure_logging
 from src.pipeline_config import PipelineRunConfig
+from src.pipeline_result import PipelineRunResult
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +45,14 @@ def parse_args():
 
     return parser.parse_args()
 
-def run_pipeline(config: PipelineRunConfig) -> None:
+def run_pipeline(config: PipelineRunConfig) -> PipelineRunResult:
     """Run the electrical inspection data pipeline."""
 
     logger.info("Starting inspection data pipeline...")
+
+    csv_outputs_written = False
+    postgres_loaded = False
+
     try:
         inspections = extract_csv(config.input_file)
 
@@ -80,11 +85,22 @@ def run_pipeline(config: PipelineRunConfig) -> None:
         
         else:
             load_csv_outputs(valid_records, rejected_records)
+            csv_outputs_written = True
 
             if not config.no_postgres:
                 load_to_postgres(valid_records)
+                postgres_loaded = True
 
         logger.info("Pipeline completed successfully.")
+
+        return PipelineRunResult(
+            source_rows=len(inspections),
+            valid_rows=len(valid_records),
+            rejected_rows=len(rejected_records),
+            csv_outputs_written=csv_outputs_written,
+            postgres_loaded=postgres_loaded,
+            dry_run=config.dry_run,
+        )
 
     except (FileNotFoundError, ValueError):
         raise
@@ -92,6 +108,28 @@ def run_pipeline(config: PipelineRunConfig) -> None:
     except Exception:
         logger.exception("Inspection data pipeline failed.")
         raise
+
+def print_pipeline_summary(result: PipelineRunResult) -> None:
+    """Print a concise summary of pipeline execution."""
+
+    print("\n--- PIPELINE SUMMARY ---")
+    print(f"Source rows: {result.source_rows}")
+    print(f"Valid rows: {result.valid_rows}")
+    print(f"Rejected rows: {result.rejected_rows}")
+    print(
+        "CSV outputs written: "
+        f"{'Yes' if result.csv_outputs_written else 'No'}"
+    )
+    print(
+        "PostgreSQL loaded: "
+        f"{'Yes' if result.postgres_loaded else 'No'}"
+    )
+    print(
+        "Dry run: "
+        f"{'Yes' if result.dry_run else 'No'}"
+    )
+    print("--- END SUMMARY ---")
+
 if __name__ == "__main__":
     configure_logging()
     
@@ -105,7 +143,8 @@ if __name__ == "__main__":
                 dry_run=args.dry_run,
             )
 
-        run_pipeline(config)
+        result = run_pipeline(config)
+        print_pipeline_summary(result)
 
     except (FileNotFoundError, ValueError) as exc:
         logger.error("%s", exc)
