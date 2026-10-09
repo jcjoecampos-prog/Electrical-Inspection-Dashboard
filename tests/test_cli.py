@@ -98,3 +98,31 @@ def test_input_file_accepts_custom_path(
     args = main.parse_args()
 
     assert args.input_file == "data/raw/custom.csv"
+
+def test_dry_run_flag(monkeypatch):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "main.py",
+            "--dry-run",
+        ],
+    )
+
+    args = main.parse_args()
+
+    assert args.dry_run is True
+
+
+def test_dry_run_defaults_to_false(monkeypatch):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "main.py",
+        ],
+    )
+
+    args = main.parse_args()
+
+    assert args.dry_run is False
