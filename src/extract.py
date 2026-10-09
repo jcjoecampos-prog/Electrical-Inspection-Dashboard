@@ -15,6 +15,16 @@ def extract_csv(file_path: str | Path = RAW_FILE,) -> pd.DataFrame:
             f"Raw inspection file was not found: {file_path}"
         )
 
+    if not file_path.is_file():
+        raise ValueError(
+            f"Raw inspection path is not a file: {file_path}"
+        )
+
+    if file_path.suffix.lower() != ".csv":
+        raise ValueError(
+            f"Raw inspection file must be a csv: {file_path}"
+        )
+
     dataframe = pd.read_csv(file_path)
 
     if dataframe.empty:
