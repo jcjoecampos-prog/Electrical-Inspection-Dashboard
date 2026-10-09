@@ -9,6 +9,7 @@ from src.load_postgres import load_to_postgres
 from src.logging_config import configure_logging
 from src.pipeline_config import PipelineRunConfig
 from src.pipeline_result import PipelineRunResult
+from uuid import uuid4
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,12 @@ def parse_args():
 def run_pipeline(config: PipelineRunConfig) -> PipelineRunResult:
     """Run the electrical inspection data pipeline."""
 
-    logger.info("Starting inspection data pipeline...")
+    run_id = str(uuid4())
+
+    logger.info(
+        "Starting inspection data pipeline. run_id=%s",
+        run_id,
+        )
 
     csv_outputs_written = False
     postgres_loaded = False
@@ -94,6 +100,7 @@ def run_pipeline(config: PipelineRunConfig) -> PipelineRunResult:
         logger.info("Pipeline completed successfully.")
 
         return PipelineRunResult(
+            run_id=run_id,
             source_rows=len(inspections),
             valid_rows=len(valid_records),
             rejected_rows=len(rejected_records),
@@ -113,6 +120,7 @@ def print_pipeline_summary(result: PipelineRunResult) -> None:
     """Print a concise summary of pipeline execution."""
 
     print("\n--- PIPELINE SUMMARY ---")
+    print(f"Run ID: {result.run_id}")
     print(f"Source rows: {result.source_rows}")
     print(f"Valid rows: {result.valid_rows}")
     print(f"Rejected rows: {result.rejected_rows}")
