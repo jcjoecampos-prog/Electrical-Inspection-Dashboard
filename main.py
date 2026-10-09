@@ -10,6 +10,7 @@ from src.logging_config import configure_logging
 from src.pipeline_config import PipelineRunConfig
 from src.pipeline_result import PipelineRunResult
 from uuid import uuid4
+from src.load_pipeline_run import load_pipeline_run
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +139,12 @@ def print_pipeline_summary(result: PipelineRunResult) -> None:
     )
     print("--- END SUMMARY ---")
 
+def audit_pipeline_run(result: PipelineRunResult) -> None:
+    """Persist the pipeline audit record unless this was a dry run."""
+
+    if not result.dry_run:
+        load_pipeline_run(result)
+
 if __name__ == "__main__":
     configure_logging()
     
@@ -152,6 +159,8 @@ if __name__ == "__main__":
             )
 
         result = run_pipeline(config)
+
+        audit_pipeline_run(result)
         print_pipeline_summary(result)
 
     except (FileNotFoundError, ValueError) as exc:
