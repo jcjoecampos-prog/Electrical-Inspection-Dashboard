@@ -77,17 +77,27 @@ def run_pipeline(config: PipelineRunConfig) -> None:
 
         logger.info("Pipeline completed successfully.")
 
+
+    except (FileNotFoundError, ValueError):
+        raise
+    
     except Exception:
         logger.exception("Inspection data pipeline failed.")
         raise
 if __name__ == "__main__":
     configure_logging()
-    args = parse_args()
+    
+    try:
+        args = parse_args()
 
-    config = PipelineRunConfig(
-            skip_profile=args.skip_profile,
-            no_postgres=args.no_postgres,
-            input_file=args.input_file,
-        )
+        config = PipelineRunConfig(
+                skip_profile=args.skip_profile,
+                no_postgres=args.no_postgres,
+                input_file=args.input_file,
+            )
 
-    run_pipeline(config)
+        run_pipeline(config)
+
+    except (FileNotFoundError, ValueError) as exc:
+        logger.error("%s", exc)
+        raise SystemExit(1)
