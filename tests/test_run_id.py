@@ -4,7 +4,7 @@ import main
 from src.pipeline_config import PipelineRunConfig
 
 
-def test_run_pipeline_generates_run_id(monkeypatch):
+def test_run_pipeline_preserves_run_id(monkeypatch):
     source = pd.DataFrame(
         [
             {
@@ -57,7 +57,11 @@ def test_run_pipeline_generates_run_id(monkeypatch):
         dry_run=True,
     )
 
-    result = main.run_pipeline(config)
+    run_id = "11111111-1111-1111-1111-111111111111"
 
-    assert isinstance(result.run_id, str)
-    assert result.run_id
+    result = main.run_pipeline(
+        config,
+        run_id,
+    )
+
+    assert result.run_id == run_id

@@ -72,4 +72,7 @@ def test_dry_run_skips_output_and_postgres(monkeypatch):
         dry_run=True,
     )
 
-    main.run_pipeline(config)
+    main.run_pipeline(
+    config,
+    "11111111-1111-1111-1111-111111111111",
+    )

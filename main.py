@@ -47,10 +47,8 @@ def parse_args():
 
     return parser.parse_args()
 
-def run_pipeline(config: PipelineRunConfig) -> PipelineRunResult:
+def run_pipeline(config: PipelineRunConfig, run_id: str) -> PipelineRunResult:
     """Run the electrical inspection data pipeline."""
-
-    run_id = str(uuid4())
 
     logger.info(
         "Starting inspection data pipeline. run_id=%s",
@@ -145,6 +143,26 @@ def audit_pipeline_run(result: PipelineRunResult) -> None:
     if not result.dry_run:
         load_pipeline_run(result)
 
+def build_failed_run_result(
+    run_id: str,
+    error_message: str,
+    dry_run: bool,
+) -> PipelineRunResult:
+    """Build an audit record for a failed pipeline execution."""
+
+    return PipelineRunResult(
+        run_id=run_id,
+        source_rows=0,
+        valid_rows=0,
+        rejected_rows=0,
+        csv_outputs_written=False,
+        postgres_loaded=False,
+        dry_run=dry_run,
+        status="FAILED",
+        error_message=error_message,
+    )
+
+
 if __name__ == "__main__":
     configure_logging()
     
@@ -158,11 +176,26 @@ if __name__ == "__main__":
                 dry_run=args.dry_run,
             )
 
-        result = run_pipeline(config)
+        run_id = str(uuid4())
+        result = run_pipeline(config, run_id)
 
         audit_pipeline_run(result)
         print_pipeline_summary(result)
 
     except (FileNotFoundError, ValueError) as exc:
+        failed_result = build_failed_run_result(
+            run_id=run_id,
+            error_message=str(exc),
+            dry_run=config.dry_run,
+        )
+
+        try:
+            audit_pipeline_run(failed_result)
+        except Exception as audit_exc:
+            logger.warning(
+                "Failed to persist pipeline audit record: %s",
+                audit_exc,
+            )
+
         logger.error("%s", exc)
         raise SystemExit(1)
