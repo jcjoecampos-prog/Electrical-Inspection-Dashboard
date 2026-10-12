@@ -9,3 +9,5 @@ class PipelineRunResult:
     csv_outputs_written: bool
     postgres_loaded: bool
     dry_run: bool
+    status: str = "SUCCESS"
+    error_message: str | None = None

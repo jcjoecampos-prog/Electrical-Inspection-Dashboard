@@ -13,9 +13,11 @@ def load_pipeline_run(result: PipelineRunResult) -> None:
             rejected_rows,
             csv_outputs_written,
             postgres_loaded,
-            dry_run
+            dry_run,
+            status,
+            error_message
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         ON CONFLICT (run_id) DO NOTHING;
     """
 
@@ -27,6 +29,8 @@ def load_pipeline_run(result: PipelineRunResult) -> None:
         result.csv_outputs_written,
         result.postgres_loaded,
         result.dry_run,
+        result.status,
+        result.error_message
     )
 
     with get_database_connection() as connection:

@@ -66,6 +66,8 @@ def test_load_pipeline_run_inserts_audit_record(monkeypatch):
         True,
         True,
         False,
+        "SUCCESS",
+        None,   
     )
 
     assert fake_connection.committed is True

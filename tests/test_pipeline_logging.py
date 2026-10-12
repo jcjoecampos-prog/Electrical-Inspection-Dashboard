@@ -25,7 +25,10 @@ def test_pipeline_logs_and_reraises_failure(
         RuntimeError,
         match = "controlled test failure",
     ):
-        main.run_pipeline(config)
+        main.run_pipeline(
+            config,
+            "11111111-1111-1111-1111-111111111111",
+        )
 
     assert (
         "Inspection data pipeline failed."
