@@ -189,7 +189,13 @@ if __name__ == "__main__":
             dry_run=config.dry_run,
         )
 
-        audit_pipeline_run(failed_result)
+        try:
+            audit_pipeline_run(failed_result)
+        except Exception as audit_exc:
+            logger.warning(
+                "Failed to persist pipeline audit record: %s",
+                audit_exc,
+            )
 
         logger.error("%s", exc)
         raise SystemExit(1)
