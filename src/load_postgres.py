@@ -1,10 +1,7 @@
-import os
 import logging 
 import pandas as pd
-import psycopg
-from dotenv import load_dotenv
+from src.db_connection import get_database_connection
 
-load_dotenv()
 logger = logging.getLogger(__name__)
 INSERT_SQL = """
 INSERT INTO inspection_records (
@@ -41,33 +38,28 @@ DO UPDATE SET
     repair_days = EXCLUDED.repair_days;
 """
 
-def load_to_postgres(dataframe: pd.DataFrame) -> None:
-    connection = psycopg.connect(
-        host=os.getenv("DB_HOST"),
-        port=os.getenv("DB_PORT"),
-        dbname=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD")
+def load_to_postgres(dataframe: pd.DataFrame) -> int:
+    """Upsert inspection records into PostgreSQL."""
+
+    records = dataframe.to_dict(orient="records")
+
+    with get_database_connection() as connection:
+        try:
+            with connection.cursor() as cursor:
+                cursor.executemany(
+                    INSERT_SQL,
+                    records,
+                )
+
+            connection.commit()
+
+        except Exception:
+            connection.rollback()
+            raise
+
+    logger.info(
+        "PostgreSQL upsert completed: %d records.",
+        len(records),
     )
 
-    try:
-        with connection.cursor() as cursor:
-            records = dataframe.to_dict(orient="records")
-            cursor.executemany(
-                INSERT_SQL, 
-                records
-            )
-
-        connection.commit()
-
-        logger.info(
-            "PostgreSQL load completed: %d records.",
-            len(dataframe),
-        )
-
-    except Exception:
-        connection.rollback()
-        raise
-    
-    finally:
-        connection.close()
+    return len(records)
